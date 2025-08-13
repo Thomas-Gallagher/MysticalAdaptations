@@ -1,43 +1,38 @@
 package com.focamacho.mysticaladaptations.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class ConfigMysticalAdaptations {
 
-    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-    private static final General GENERAL = new General(BUILDER);
-    public static final ForgeConfigSpec spec = BUILDER.build();
+    public static final General CONFIG;
+    public static final ModConfigSpec SPEC;
 
-    //Mystical Agradditions
-    public static ConfigValue<Integer> insaniumArmorAugments;
-    public static ConfigValue<Integer> insaniumToolsAugments;
-
-    //Vampirism Compat
-    public static ConfigValue<Boolean> thirstlessAugment;
-    public static ConfigValue<Boolean> daywalkerAugment;
-
-    //Mob Drops
-    public static ConfigValue<Boolean> witherInsanium;
-    public static ConfigValue<Boolean> dragonInsanium;
+    static {
+        Pair<General, ModConfigSpec> pair = new ModConfigSpec.Builder().configure(General::new);
+        CONFIG = pair.getLeft();
+        SPEC = pair.getRight();
+    }
 
     public static class General {
-        public General(final ForgeConfigSpec.Builder builder) {
+        public final ModConfigSpec.IntValue insaniumArmorAugments;
+        public final ModConfigSpec.IntValue insaniumToolsAugments;
+        public final ModConfigSpec.BooleanValue witherInsanium;
+        public final ModConfigSpec.BooleanValue dragonInsanium;
+
+        public General(ModConfigSpec.Builder builder) {
             builder.push("Mystical Agradditions");
-            insaniumArmorAugments = builder.comment("Set how many augments can be placed on the insanium armor").defineInRange("insanium_armor_augments", 2, 1, 2);
-            insaniumToolsAugments = builder.comment("Set how many augments can be placed on the insanium tools").defineInRange("insanium_tools_augments", 2, 1, 2);
-            builder.pop();
 
-            builder.push("Vampirism Compat");
-            thirstlessAugment = builder.comment("Enable the Thirstless Augment").define("thirstless_augment", true);
-            daywalkerAugment = builder.comment("Enable the Daywalker Augment").define("daywalker_augment", true);
-            builder.pop();
+            insaniumArmorAugments = builder.defineInRange("insanium_armor_augments", 2, 1, 2);
+            insaniumToolsAugments = builder.defineInRange("insanium_tools_augments", 2, 1, 2);
 
+            builder.pop();
             builder.push("Mob Drops");
-            witherInsanium = builder.comment("Wither drops insanium essence when killed with an Insanium weapon.").define("wither_insanium", true);
-            dragonInsanium = builder.comment("Ender Dragon drops insanium essence when killed with an Insanium weapon.").define("dragon_insanium", true);
+
+            witherInsanium = builder.define("wither_insanium", true);
+            dragonInsanium = builder.define("dragon_insanium", true);
+
             builder.pop();
         }
     }
-
 }
