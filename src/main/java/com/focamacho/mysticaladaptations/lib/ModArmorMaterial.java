@@ -20,15 +20,12 @@ import java.util.function.Supplier;
 
 public class ModArmorMaterial {
 
-    // Create a DeferredRegister for armor materials
     public static final DeferredRegister<ArmorMaterial> ARMOR_MATERIALS =
             DeferredRegister.create(Registries.ARMOR_MATERIAL, Reference.MOD_ID);
 
-    // Register the Insanium armor material using DeferredRegister
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> INSANIUM =
             ARMOR_MATERIALS.register("insanium", () -> {
 
-                // Define defense values for each armor piece
                 Map<ArmorItem.Type, Integer> defenseMap = Map.of(
                         ArmorItem.Type.BOOTS, 4,
                         ArmorItem.Type.LEGGINGS, 7,
@@ -36,12 +33,10 @@ public class ModArmorMaterial {
                         ArmorItem.Type.HELMET, 5
                 );
 
-                // Define armor layers for rendering
                 List<ArmorMaterial.Layer> layers = List.of(
                         new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "insanium"))
                 );
 
-                // Create a tag for repair materials - use insanium ingot
                 TagKey<Item> repairTag = ItemTags.create(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "ingots/insanium"));
 
                 return new ArmorMaterial(
