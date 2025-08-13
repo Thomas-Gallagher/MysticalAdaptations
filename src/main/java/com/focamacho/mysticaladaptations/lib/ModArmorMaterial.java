@@ -1,82 +1,57 @@
 package com.focamacho.mysticaladaptations.lib;
 
-import com.blakebr0.mysticalagradditions.init.ModItems;
-import com.focamacho.mysticaladaptations.util.Utils;
-import net.minecraft.sounds.SoundEvent;
+import com.focamacho.mysticaladaptations.init.ModItems;
+import com.focamacho.mysticaladaptations.util.Reference;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.LazyLoadedValue;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
-public enum ModArmorMaterial implements ArmorMaterial {
+public class ModArmorMaterial {
 
-    INSANIUM(Utils.getRegistryName("insanium").toString(), 400, new int[]{8, 12, 14, 10}, 24, SoundEvents.ARMOR_EQUIP_GOLD, 4.0F, 0.2F, () -> Ingredient.of(ModItems.INSANIUM_INGOT.get()));
+    // Create a DeferredRegister for armor materials
+    public static final DeferredRegister<ArmorMaterial> ARMOR_MATERIALS =
+            DeferredRegister.create(Registries.ARMOR_MATERIAL, Reference.MOD_ID);
 
-    private static final int[] MAX_DAMAGE_ARRAY = new int[] { 13, 15, 16, 11 };
-    private final String name;
-    private final int maxDamageFactor;
-    private final int[] damageReductionAmountArray;
-    private final int enchantability;
-    private final SoundEvent soundEvent;
-    private final float toughness;
-    private final float knockbackResistance;
-    private final LazyLoadedValue<Ingredient> repairMaterial;
+    // Register the Insanium armor material using DeferredRegister
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> INSANIUM =
+            ARMOR_MATERIALS.register("insanium", () -> {
 
-    ModArmorMaterial(String name, int maxDamageFactor, int[] damageReductionAmountArray, int enchantability, SoundEvent soundEvent, float toughness, float knockbackResistance, Supplier<Ingredient> repairMaterial) {
-        this.name = name;
-        this.maxDamageFactor = maxDamageFactor;
-        this.damageReductionAmountArray = damageReductionAmountArray;
-        this.enchantability = enchantability;
-        this.soundEvent = soundEvent;
-        this.toughness = toughness;
-        this.knockbackResistance = knockbackResistance;
-        this.repairMaterial = new LazyLoadedValue<>(repairMaterial);
-    }
+                // Define defense values for each armor piece
+                Map<ArmorItem.Type, Integer> defenseMap = Map.of(
+                        ArmorItem.Type.BOOTS, 4,
+                        ArmorItem.Type.LEGGINGS, 7,
+                        ArmorItem.Type.CHESTPLATE, 9,
+                        ArmorItem.Type.HELMET, 5
+                );
 
-    @Override
-    public int getDurabilityForType(ArmorItem.Type slot) {
-        return MAX_DAMAGE_ARRAY[slot.getSlot().getIndex()] * this.maxDamageFactor;
-    }
+                // Define armor layers for rendering
+                List<ArmorMaterial.Layer> layers = List.of(
+                        new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "insanium"))
+                );
 
-    @Override
-    public int getDefenseForType(ArmorItem.Type slot) {
-        return this.damageReductionAmountArray[slot.getSlot().getIndex()];
-    }
+                // Create a tag for repair materials - use insanium ingot
+                TagKey<Item> repairTag = ItemTags.create(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "ingots/insanium"));
 
-    @Override
-    public int getEnchantmentValue() {
-        return this.enchantability;
-    }
-
-    @Override
-    public SoundEvent getEquipSound() {
-        return this.soundEvent;
-    }
-
-    @Override
-    public Ingredient getRepairIngredient() {
-        return this.repairMaterial.get();
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public float getToughness() {
-        return this.toughness;
-    }
-
-    @Override
-    public float getKnockbackResistance() {
-        return this.knockbackResistance;
-    }
+                return new ArmorMaterial(
+                        defenseMap,        // Defense values per armor type
+                        20,                // Enchantability
+                        SoundEvents.ARMOR_EQUIP_NETHERITE, // Equip sound
+                        () -> Ingredient.of(ModItems.INSANIUM_INGOT.get()), // Repair ingredient supplier
+                        layers,            // Armor layers
+                        4.0F,              // Toughness
+                        0.2F               // Knockback resistance
+                );
+            });
 }
