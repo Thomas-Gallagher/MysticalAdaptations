@@ -47,8 +47,6 @@ public enum ModItemTier implements Tier {
 
     @Override
     public TagKey<Block> getIncorrectBlocksForDrops() {
-        // Return the appropriate tag for blocks that this tier can't mine
-        // For high-tier tools like Insanium, we typically want to mine most blocks
         return BlockTags.INCORRECT_FOR_NETHERITE_TOOL;
     }
 
