@@ -20,7 +20,6 @@ public class ModCreativeTabs {
                 .icon(() -> new ItemStack(ModItems.INSANIUM_ESSENCE.get()))
                 .displayItems((params, output) -> {
                     output.accept(ModItems.INSANIUM_ESSENCE.get());
-                    // Add more items/blocks as needed
                 })
                 .build();
 
