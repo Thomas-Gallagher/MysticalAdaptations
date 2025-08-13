@@ -1,9 +1,12 @@
 package com.focamacho.mysticaladaptations.lib;
 
-import com.blakebr0.mysticalagradditions.init.ModItems;
+import com.focamacho.mysticaladaptations.init.ModItems;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 
 import java.util.function.Supplier;
 
@@ -27,28 +30,35 @@ public enum ModItemTier implements Tier {
         this.repairMaterial = new LazyLoadedValue<>(repairMaterial);
     }
 
+    @Override
     public int getUses() {
         return this.maxUses;
     }
 
+    @Override
     public float getSpeed() {
         return this.efficiency;
     }
 
+    @Override
     public float getAttackDamageBonus() {
         return this.attackDamage;
     }
 
-    public int getLevel() {
-        return this.harvestLevel;
+    @Override
+    public TagKey<Block> getIncorrectBlocksForDrops() {
+        // Return the appropriate tag for blocks that this tier can't mine
+        // For high-tier tools like Insanium, we typically want to mine most blocks
+        return BlockTags.INCORRECT_FOR_NETHERITE_TOOL;
     }
 
+    @Override
     public int getEnchantmentValue() {
         return this.enchantability;
     }
 
+    @Override
     public Ingredient getRepairIngredient() {
         return this.repairMaterial.get();
     }
-
 }
