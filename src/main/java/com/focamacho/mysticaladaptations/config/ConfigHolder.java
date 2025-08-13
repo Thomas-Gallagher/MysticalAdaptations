@@ -1,44 +1,36 @@
 package com.focamacho.mysticaladaptations.config;
 
 import com.focamacho.mysticaladaptations.util.Reference;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ConfigHolder {
 
-    //Mystical Agradditions
+    public static final ConfigHolder INSTANCE = new ConfigHolder();
+
+    // Mystical Agradditions
     public static int insaniumArmorAugments;
     public static int insaniumToolsAugments;
 
-    //Vampirism Compat
-    public static boolean thirstlessAugment;
-    public static boolean daywalkerAugment;
-
-    //Mob Drops
+    // Mob Drops
     public static boolean witherInsanium;
     public static boolean dragonInsanium;
 
-    public static void updateConfigs(){
-        insaniumArmorAugments = ConfigMysticalAdaptations.insaniumArmorAugments.get();
-        insaniumToolsAugments = ConfigMysticalAdaptations.insaniumToolsAugments.get();
+    public static void updateConfigs() {
+        insaniumArmorAugments = ConfigMysticalAdaptations.CONFIG.insaniumArmorAugments.get();
+        insaniumToolsAugments = ConfigMysticalAdaptations.CONFIG.insaniumToolsAugments.get();
 
-        thirstlessAugment = ConfigMysticalAdaptations.thirstlessAugment.get();
-        daywalkerAugment = ConfigMysticalAdaptations.daywalkerAugment.get();
-
-        witherInsanium = ConfigMysticalAdaptations.witherInsanium.get();
-        dragonInsanium = ConfigMysticalAdaptations.dragonInsanium.get();
+        witherInsanium = ConfigMysticalAdaptations.CONFIG.witherInsanium.get();
+        dragonInsanium = ConfigMysticalAdaptations.CONFIG.dragonInsanium.get();
     }
 
     @SubscribeEvent
-    public static void onModConfigEvent(final ModConfigEvent event) {
+    public void onModConfigEvent(final ModConfigEvent event) {
         final ModConfig config = event.getConfig();
 
-        if (config.getSpec() == ConfigMysticalAdaptations.spec) {
+        if (config.getModId().equals(Reference.MOD_ID) && config.getType() == ModConfig.Type.COMMON) {
             updateConfigs();
         }
     }
-
 }
